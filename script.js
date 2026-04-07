@@ -113,10 +113,13 @@ function loadFBX(url, isDefault = false) {
         const boneSelect = document.getElementById('boneSelect');
         boneSelect.innerHTML = ''; 
 
-        let bones = [];
+        // 1. Collect all bones into a temporary array
+        let allBones = [];
         model.traverse(child => {
             if (child.isBone) {
-                bones.push(child);
+                allBones.push(child);
+                
+                // Populate the dropdown
                 const option = document.createElement('option');
                 option.value = child.name;
                 option.text = child.name;
@@ -124,23 +127,26 @@ function loadFBX(url, isDefault = false) {
             }
         });
 
-        // --- PRIORITY SELECTION LOGIC ---
-        // 1. Try to find an EXACT match for "Head" (case-insensitive)
-        let target = bones.find(b => b.name.toLowerCase() === "head");
+        // 2. PRIORITY SEARCH
+        // First pass: Look for an EXACT match (e.g., "Head")
+        let target = allBones.find(b => b.name.toLowerCase() === "head");
 
-        // 2. If no exact match, find the first bone that contains "head"
+        // Second pass: If no exact match, look for "head" anywhere (e.g., "zHead", "Bip01_Head")
         if (!target) {
-            target = bones.find(b => b.name.toLowerCase().includes("head"));
+            target = allBones.find(b => b.name.toLowerCase().includes("head"));
         }
 
-        // Apply the selection to the UI and the preview variable
+        // 3. Apply the winner to the preview
         if (target) {
             headBone = target;
             boneSelect.value = target.name;
             showToast(`Auto-selected: ${target.name}`);
         }
 
-        // Setup camera/view
+        // 4. Reset Export ID to your default
+        document.getElementById('boneIdInput').value = 22;
+
+        // --- Camera Centering Logic ---
         const box = new THREE.Box3().setFromObject(model);
         const center = box.getCenter(new THREE.Vector3());
         const size = box.getSize(new THREE.Vector3());
@@ -148,7 +154,12 @@ function loadFBX(url, isDefault = false) {
         controls.target.copy(center);
 
         document.getElementById('loading-overlay').classList.add('hidden');
-        if(!isDefault) showToast("Model Swapped. Bone ID reset to 22.");
+        if(!isDefault) showToast("Model Swapped. ID reset to 22.");
+    }, 
+    undefined, 
+    (error) => {
+        if(isDefault) console.warn("Default model sample_head.fbx not found.");
+        document.getElementById('loading-overlay').classList.add('hidden');
     });
 }
 
