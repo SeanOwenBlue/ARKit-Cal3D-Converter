@@ -46,7 +46,7 @@ function animate() {
     requestAnimationFrame(animate);
     
     if (isPlaying && csvData.length > 0) {
-        const fps = parseFloat(document.getElementById('fpsInput').value) || 60;
+        const fps = parseFloat(document.getElementById('fpsInput').value) || 30;
         const start = parseInt(document.getElementById('trimStart').value);
         const end = parseInt(document.getElementById('trimEnd').value);
 
@@ -194,7 +194,7 @@ document.getElementById('csvInput').addEventListener('change', (e) => {
         trimStart.value = 0;
         trimEnd.value = csvData.length - 1;
         
-        const fps = parseFloat(document.getElementById('fpsInput').value) || 60;
+        const fps = parseFloat(document.getElementById('fpsInput').value) || 30;
         document.getElementById('totalTimeDisplay').innerText = formatTime(csvData.length / fps);
         
         document.getElementById('trimUI').classList.remove('hidden');
