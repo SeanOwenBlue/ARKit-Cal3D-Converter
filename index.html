@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARKit Cal3D Studio</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/fflate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <div class="sidebar">
+            <h1>ARKit Studio</h1>
+            
+            <section>
+                <label class="file-label">1. Load FBX Model
+                    <input type="file" id="fbxInput" accept=".fbx">
+                </label>
+                <label class="file-label">2. Load ARKit CSV
+                    <input type="file" id="csvInput" accept=".csv">
+                </label>
+            </section>
+
+            <section class="settings-grid">
+                <div>
+                    <label>FPS</label>
+                    <input type="number" id="fpsInput" value="60">
+                </div>
+                <div>
+                    <label>Head Bone ID</label>
+                    <input type="number" id="boneIdInput" value="22">
+                </div>
+            <div class="input-group full-width">
+                <label>Active Head Bone</label>
+                <select id="boneSelect">
+                    <option>Waiting for model...</option>
+                </select>
+            </div>
+
+
+            </section>
+
+            <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+            <section id="playbackUI" class="hidden">
+                <div class="playback-controls">
+                    <button id="playBtn" class="btn-blue">Play</button>
+                    <button id="stopBtn" class="btn-red">Stop</button>
+                </div>
+                <div class="timeline-info">
+                    <span id="currentTimeDisplay">00:00</span> / <span id="totalTimeDisplay">00:00</span>
+                </div>
+
+            <div class="toggle-group">
+                <input type="checkbox" id="loopToggle" checked>
+                <label for="loopToggle">Loop Animation</label>
+            </div>
+            </section>
+
+            <section id="trimUI" class="hidden">
+                <h3>Trim & Export</h3>
+                <div class="range-container">
+                    <input type="range" id="trimStart" value="0" step="1">
+                    <input type="range" id="trimEnd" value="100" step="1">
+                </div>
+                <p id="trimStatus">Frames: 0 - 0</p>
+                
+                <div class="export-btns">
+                    <button id="saveXpf" class="btn-green">Save .XPF</button>
+                    <button id="saveXaf" class="btn-green">Save .XAF</button>
+                </div>
+            </section>
+
+
+        </div>
+
+        <div id="canvas-container">
+            <div id="loading-overlay" class="hidden">Loading Model...</div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+    <script src="script.js"></script>
+
+</body>
+</html>
