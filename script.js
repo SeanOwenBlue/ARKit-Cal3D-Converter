@@ -113,26 +113,32 @@ function loadFBX(url, isDefault = false) {
         const boneSelect = document.getElementById('boneSelect');
         boneSelect.innerHTML = ''; 
 
-        // Always reset the Bone ID input to 22 on a fresh model load
-        document.getElementById('boneIdInput').value = 22;
-
+        let bones = [];
         model.traverse(child => {
             if (child.isBone) {
+                bones.push(child);
                 const option = document.createElement('option');
                 option.value = child.name;
                 option.text = child.name;
-                
-                // Keep child.id as a backup reference in the background
-                option.dataset.id = child.id; 
                 boneSelect.appendChild(option);
-                
-                // We still auto-detect "Head" for the 3D PREVIEW rotation
-                if (child.name.toLowerCase().includes("head")) {
-                    option.selected = true;
-                    headBone = child; 
-                }
             }
         });
+
+        // --- PRIORITY SELECTION LOGIC ---
+        // 1. Try to find an EXACT match for "Head" (case-insensitive)
+        let target = bones.find(b => b.name.toLowerCase() === "head");
+
+        // 2. If no exact match, find the first bone that contains "head"
+        if (!target) {
+            target = bones.find(b => b.name.toLowerCase().includes("head"));
+        }
+
+        // Apply the selection to the UI and the preview variable
+        if (target) {
+            headBone = target;
+            boneSelect.value = target.name;
+            showToast(`Auto-selected: ${target.name}`);
+        }
 
         // Setup camera/view
         const box = new THREE.Box3().setFromObject(model);
